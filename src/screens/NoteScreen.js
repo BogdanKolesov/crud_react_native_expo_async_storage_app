@@ -27,7 +27,7 @@ const NoteScreen = ({ user }) => {
         }
         const updatedNotes = [...notes, note]
         setNotes(updatedNotes)
-        console.log(notes)
+        // console.log(notes)
         await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes))
     }
     const findNotes = async () => {
