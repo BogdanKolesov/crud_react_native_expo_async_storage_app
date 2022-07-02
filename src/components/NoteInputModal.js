@@ -3,6 +3,7 @@ import { View, StyleSheet, Modal, Keyboard, Text, StatusBar, TextInput, Touchabl
 import colors from '../misc/colors';
 import RoundIconBtn from './RoundIconBtn';
 
+
 const NoteInputModal = ({ visible, onClose, onSubmit }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
