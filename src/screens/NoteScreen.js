@@ -7,7 +7,7 @@ import colors from '../misc/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Note from '../components/Note';
 
-const NoteScreen = ({ user }) => {
+const NoteScreen = ({ user, navigation }) => {
     const [greet, setGreet] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [notes, setNotes] = useState([]);
@@ -39,6 +39,11 @@ const NoteScreen = ({ user }) => {
         findGreet()
         findNotes()
     }, []);
+
+    const openNote = (note) => {
+        navigation.navigate('NoteDetail', { note })
+    }
+
     return (
         <>
             <StatusBar barStyle='dark-content' backgroundColor={colors.LIGHT} />
@@ -53,7 +58,7 @@ const NoteScreen = ({ user }) => {
                             {
                                 notes.map((item) => (
                                     <View style={styles.noteContainer} key={item.id}>
-                                        <Note item={item} />
+                                        <Note onPress={() => openNote(item)} item={item} />
                                     </View>
                                 ))
                             }
