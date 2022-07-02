@@ -17,8 +17,9 @@ export default function App() {
   }
   useEffect(() => {
     findUser()
+    // AsyncStorage.clear()
   }, [])
-  if (!user.name) return <Intro />
+  if (!user.name) return <Intro onFinish={findUser} />
   return <NoteScreen user={user} />
 }
 

@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, StatusBar } from 'react-native';
+import NoteInputModal from '../components/NoteInputModal';
 import RoundIconBtn from '../components/RoundIconBtn';
 import SearchBar from '../components/SearchBar';
 import colors from '../misc/colors';
 
 const NoteScreen = ({ user }) => {
     const [greet, setGreet] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+
     const findGreet = () => {
         const hrs = new Date().getHours()
         if (hrs === 0 || hrs < 12) return setGreet('Morning')
         if (hrs === 1 || hrs < 17) return setGreet('Afternoon')
         setGreet('Evening')
+    }
+    const handleOnSubmit = (title, description) => {
+        console.log(title, description)
     }
 
     useEffect(() => {
@@ -26,9 +32,14 @@ const NoteScreen = ({ user }) => {
                     <Text style={styles.emptyHeader}>
                         Add notes
                     </Text>
-                    <RoundIconBtn onPress={console.log('open')} antIconName='plus' style={styles.addBtn} />
+                    <RoundIconBtn onPress={() => setModalVisible(true)} antIconName='plus' style={styles.addBtn} />
                 </View>
             </View>
+            <NoteInputModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onSubmit={handleOnSubmit}
+            />
         </>
     );
 }

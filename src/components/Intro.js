@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import RoundIconBtn from './RoundIconBtn';
 
 
-const Intro = () => {
+const Intro = ({ onFinish }) => {
     const [name, setName] = useState('');
     const handleOnChangeText = (text) => {
         setName(text)
@@ -13,6 +13,7 @@ const Intro = () => {
     const handleSubmit = async () => {
         const user = { name: name }
         await AsyncStorage.setItem('user', JSON.stringify(user))
+        if (onFinish) onFinish()
     }
 
     return (
