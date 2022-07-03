@@ -16,6 +16,16 @@ const NoteScreen = ({ user, navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [resultNotFound, setResultNotFound] = useState(false);
 
+    const reverseData = data => {
+        return data.sort((a, b) => {
+            const aInt = parseInt(a.time)
+            const bInt = parseInt(b.time)
+            if (aInt < bInt) return 1
+            if (aInt == bInt) return 0
+            if (aInt > bInt) return -1
+        })
+    }
+
     const findGreet = () => {
         const hrs = new Date().getHours()
         if (hrs === 0 || hrs < 12) return setGreet('Morning')
@@ -68,6 +78,8 @@ const NoteScreen = ({ user, navigation }) => {
         await findNotes()
     }
 
+    const reverseNotes = reverseData(notes)
+
     return (
         <>
             <StatusBar
@@ -92,7 +104,7 @@ const NoteScreen = ({ user, navigation }) => {
                                 <NotFound />
                                 : <View style={styles.noteView}>
                                     {
-                                        notes.map((item) => (
+                                        reverseNotes.map((item) => (
                                             <View style={styles.noteContainer} key={item.id}>
                                                 <Note onPress={() => openNote(item)} item={item} />
                                             </View>
