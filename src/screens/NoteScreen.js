@@ -44,6 +44,7 @@ const NoteScreen = ({ user, navigation }) => {
         navigation.navigate('NoteDetail', { note })
     }
 
+
     return (
         <>
             <StatusBar barStyle='dark-content' backgroundColor={colors.LIGHT} />
@@ -56,7 +57,7 @@ const NoteScreen = ({ user, navigation }) => {
                         }
                         <View style={styles.noteView}>
                             {
-                                notes.map((item) => (
+                                notes.sort().map((item) => (
                                     <View style={styles.noteContainer} key={item.id}>
                                         <Note onPress={() => openNote(item)} item={item} />
                                     </View>
