@@ -56,7 +56,7 @@ const NoteScreen = ({ user, navigation }) => {
                         }
                         <View style={styles.noteView}>
                             {
-                                notes.sort().map((item) => (
+                                notes.map((item) => (
                                     <View style={styles.noteContainer} key={item.id}>
                                         <Note onPress={() => openNote(item)} item={item} />
                                     </View>

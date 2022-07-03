@@ -27,11 +27,12 @@ const NoteDetail = (props) => {
 
     const deleteNote = async () => {
         const result = await AsyncStorage.getItem('notes')
-        let notes = []
-        if (result !== null) JSON.parse(result)
+        let notes = notes
+        if (result !== null) notes = JSON.parse(result)
         const newNotes = notes.filter(n => n.id !== note.id)
         setNotes(newNotes)
         await AsyncStorage.setItem('notes', JSON.stringify(newNotes))
+        // console.log(newNotes
         props.navigation.goBack()
     }
 
@@ -44,7 +45,7 @@ const NoteDetail = (props) => {
                 },
                 {
                     text: 'No, thanks',
-                    onPress: () => console.log('No')
+                    // onPress: () => console.log('No')
                 },
                 {
                     cancelable: true,
