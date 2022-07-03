@@ -2,9 +2,14 @@ import React from 'react';
 import { View, StyleSheet, Text, ScrollView, Alert } from 'react-native';
 import colors from '../misc/colors';
 import RoundIconBtn from './RoundIconBtn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNotes } from '../contexts/NoteProvider';
 
 
 const NoteDetail = (props) => {
+
+    const { setNotes } = useNotes()
+
     const { note } = props.route.params
     const formatDate = ms => {
         const date = new Date(ms)
@@ -18,12 +23,22 @@ const NoteDetail = (props) => {
         return `${day} ${month} ${year} at ${hours}:${min}:${sec}`
     }
 
+    const deleteNote = async () => {
+        const result = await AsyncStorage.getItem('notes')
+        let notes = []
+        if (result !== null) JSON.parse(result)
+        const newNotes = notes.filter(n => n.id !== note.id)
+        setNotes(newNotes)
+        await AsyncStorage.setItem('notes', JSON.stringify(newNotes))
+        props.navigation.goBack()
+    }
+
     const displayDeleteAlert = () => {
         Alert.alert('Are you sure?', 'This action will delete your note!',
             [
                 {
                     text: 'Delete',
-                    onPress: () => console.log('deleted')
+                    onPress: deleteNote
                 },
                 {
                     text: 'No, thanks',

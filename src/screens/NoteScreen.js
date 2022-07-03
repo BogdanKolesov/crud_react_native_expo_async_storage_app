@@ -6,11 +6,12 @@ import SearchBar from '../components/SearchBar';
 import colors from '../misc/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Note from '../components/Note';
+import { useNotes } from '../contexts/NoteProvider';
 
 const NoteScreen = ({ user, navigation }) => {
     const [greet, setGreet] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const [notes, setNotes] = useState([]);
+    const { notes, setNotes } = useNotes()
 
     const findGreet = () => {
         const hrs = new Date().getHours()
@@ -30,14 +31,9 @@ const NoteScreen = ({ user, navigation }) => {
         // console.log(notes)
         await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes))
     }
-    const findNotes = async () => {
-        const result = await AsyncStorage.getItem('notes')
-        if (result !== null) setNotes(JSON.parse(result))
-    }
 
     useEffect(() => {
         findGreet()
-        findNotes()
     }, []);
 
     const openNote = (note) => {
@@ -49,7 +45,10 @@ const NoteScreen = ({ user, navigation }) => {
         <>
             <StatusBar barStyle='dark-content' backgroundColor={colors.LIGHT} />
             <ScrollView style={{ heigth: 'auto' }} >
+
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+
                     <View style={styles.container}>
                         <Text style={styles.header}>{`Good ${greet} ${user.name}`}</Text>
                         {
@@ -73,7 +72,13 @@ const NoteScreen = ({ user, navigation }) => {
                 onClose={() => setModalVisible(false)}
                 onSubmit={handleOnSubmit}
             />
-
+            {
+                !notes.length ?
+                    (<View style={styles.emptyHeaderContainer}>
+                        <Text style={styles.emptyHeader}>Add notes</Text>
+                    </View>)
+                    : null
+            }
         </>
     );
 }
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         flex: 1,
         zIndex: 1,
+        paddingVertical: 15
     },
     header: {
         fontSize: 25,
@@ -91,8 +97,9 @@ const styles = StyleSheet.create({
     emptyHeaderContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1,
-        zIndex: -1
+        height: '80%',
+        zIndex: -100,
+        background: 'transparent'
     },
     emptyHeader: {
         fontSize: 30,
