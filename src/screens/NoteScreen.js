@@ -7,11 +7,14 @@ import colors from '../misc/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Note from '../components/Note';
 import { useNotes } from '../contexts/NoteProvider';
+import NotFound from '../components/NotFound';
 
 const NoteScreen = ({ user, navigation }) => {
     const [greet, setGreet] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const { notes, setNotes } = useNotes()
+    const { notes, setNotes, findNotes } = useNotes()
+    const [searchQuery, setSearchQuery] = useState('');
+    const [resultNotFound, setResultNotFound] = useState(false);
 
     const findGreet = () => {
         const hrs = new Date().getHours()
@@ -40,29 +43,64 @@ const NoteScreen = ({ user, navigation }) => {
         navigation.navigate('NoteDetail', { note })
     }
 
+    const handleOnSearchInput = async (text) => {
+        setSearchQuery(text)
+        if (!text.trim()) {
+            setSearchQuery('')
+            setResultNotFound(false)
+            return await findNotes()
+        }
+        const filteredNotes = notes.filter(note => {
+            if (note.title.toLowerCase().includes(text.toLowerCase())) {
+                return note
+            }
+        })
+        if (filteredNotes.length) {
+            setNotes([...filteredNotes])
+        } else {
+            setResultNotFound(true)
+        }
+    }
+
+    const handleOnClear = async () => {
+        setSearchQuery('')
+        setResultNotFound(false)
+        await findNotes()
+    }
 
     return (
         <>
-            <StatusBar barStyle='dark-content' backgroundColor={colors.LIGHT} />
-            <ScrollView style={{ heigth: 'auto' }} >
-
+            <StatusBar
+                barStyle='dark-content'
+                backgroundColor={colors.LIGHT}
+            />
+            <ScrollView contentContainerStyle={{ height: '100%' }}  >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
-
                     <View style={styles.container}>
                         <Text style={styles.header}>{`Good ${greet} ${user.name}`}</Text>
                         {
-                            notes.length ? <SearchBar containerStyle={{ marginVertical: 15 }} /> : null
+                            notes.length ?
+                                <SearchBar
+                                    value={searchQuery}
+                                    onChangeText={handleOnSearchInput}
+                                    containerStyle={{ marginVertical: 15 }}
+                                    onClear={handleOnClear}
+                                /> : null
                         }
-                        <View style={styles.noteView}>
-                            {
-                                notes.map((item) => (
-                                    <View style={styles.noteContainer} key={item.id}>
-                                        <Note onPress={() => openNote(item)} item={item} />
-                                    </View>
-                                ))
-                            }
-                        </View>
+                        {
+                            resultNotFound ?
+                                <NotFound />
+                                : <View style={styles.noteView}>
+                                    {
+                                        notes.map((item) => (
+                                            <View style={styles.noteContainer} key={item.id}>
+                                                <Note onPress={() => openNote(item)} item={item} />
+                                            </View>
+                                        ))
+                                    }
+                                </View>
+                        }
+
                     </View>
                 </TouchableWithoutFeedback>
             </ScrollView>
