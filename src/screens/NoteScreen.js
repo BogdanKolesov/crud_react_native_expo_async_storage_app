@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Text, StatusBar, TouchableWithoutFeedback, Keyboard, FlatList, ScrollView } from 'react-native';
 import NoteInputModal from '../components/NoteInputModal';
 import RoundIconBtn from '../components/RoundIconBtn';
@@ -8,6 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Note from '../components/Note';
 import { useNotes } from '../contexts/NoteProvider';
 import NotFound from '../components/NotFound';
+import LanguageIcon from '../components/LanguageIcon';
+import i18next from 'i18next';
+
 
 const NoteScreen = ({ user, navigation }) => {
     const [greet, setGreet] = useState('');
@@ -15,6 +19,27 @@ const NoteScreen = ({ user, navigation }) => {
     const { notes, setNotes, findNotes } = useNotes()
     const [searchQuery, setSearchQuery] = useState('');
     const [resultNotFound, setResultNotFound] = useState(false);
+    const [language, setLanguage] = useState('en');
+
+    const { i18n, t } = useTranslation(['hello'])
+
+    const getLanguage = async () => {
+        try {
+            const savedLang = await AsyncStorage.getItem("language");
+            const currentLang = JSON.parse(savedLang);
+            setLanguage(currentLang)
+            // i18next.changeLanguage(language)
+            console.log(language);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getLanguage()
+        // i18next.changeLanguage(language)
+    }, []);
 
     const reverseData = data => {
         return data.sort((a, b) => {
@@ -87,11 +112,13 @@ const NoteScreen = ({ user, navigation }) => {
                 backgroundColor={colors.LIGHT}
             />
             <ScrollView contentContainerStyle={{ height: '100%' }}  >
+                <LanguageIcon language={language} />
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.container}>
-                        <Text style={styles.header}>{`Good ${greet} ${user.name}`}</Text>
+                        <Text style={styles.header}>{`${t('good')} ${greet} ${user.name}`}</Text>
                         {
                             notes.length ?
+
                                 <SearchBar
                                     value={searchQuery}
                                     onChangeText={handleOnSearchInput}
