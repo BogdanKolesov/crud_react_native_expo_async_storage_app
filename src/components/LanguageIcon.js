@@ -1,43 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import colors from '../misc/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLanguage } from '../contexts/LanguageProvider';
+// import i18n from '../in18n'
 
 
 
 
+const LanguageIcon = () => {
 
+    const { language, setLanguage, findLanguage } = useLanguage()
 
-const LanguageIcon = ({ language }) => {
-
-
-    const storeLanguage = async (value) => {
-        try {
-            await AsyncStorage.setItem("language", JSON.stringify(value));
-            console.log(value)
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    const changeLanguage = async (lang) => {
+        // const lang = 'en'
+        const updatedLanguage = lang
+        setLanguage(updatedLanguage)
+        // console.log(lang);
+        await AsyncStorage.setItem('language', JSON.stringify(updatedLanguage))
+    }
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity language={language} data='ru' onPress={() => storeLanguage('ru')} style={styles.iconContainer}>
+            <TouchableOpacity data='ru' onPress={() => changeLanguage('ru')} style={styles.iconContainer}>
                 <Text style={styles.text}>
                     RU
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity language={language} data='ua' onPress={() => storeLanguage('ua')} style={styles.iconContainer}>
+            <TouchableOpacity data='ua' onPress={() => changeLanguage('ua')} style={styles.iconContainer}>
                 <Text style={styles.text}>
                     UA
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity language={language} data='en' onPress={() => storeLanguage('en')} style={styles.iconContainer}>
+            <TouchableOpacity data='en' onPress={() => changeLanguage('en')} style={styles.iconContainer}>
                 <Text style={styles.text}>
                     EN
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity language={language} data='ge' onPress={() => storeLanguage('ge')} style={styles.iconContainer}>
+            <TouchableOpacity data='ge' onPress={() => changeLanguage('ge')} style={styles.iconContainer}>
                 <Text style={styles.text}>
                     GE
                 </Text>

@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { Suspense } from 'react';
 import Intro from './src/components/Intro'
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +9,7 @@ import NoteDetail from './src/components/NoteDetail';
 import { NavigationContainer } from '@react-navigation/native'
 import NoteProvider from './src/contexts/NoteProvider';
 import LanguageProvider from './src/contexts/LanguageProvider';
+import i18next from './src/in18n'
 
 const Stack = createNativeStackNavigator()
 
@@ -37,20 +37,18 @@ export default function App() {
   if (isAppFirstTimeOpen) return <Intro onFinish={findUser} />
   return (
     <NavigationContainer>
-      <Suspense fallback={null}>
-        <LanguageProvider>
-          <NoteProvider>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen component={RenderNoteScreen} name='NoteScreen' />
-              <Stack.Screen component={NoteDetail} name='NoteDetail' />
-            </Stack.Navigator>
-          </NoteProvider>
-        </LanguageProvider>
-      </Suspense>
+      <LanguageProvider>
+        <NoteProvider>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen component={RenderNoteScreen} name='NoteScreen' />
+            <Stack.Screen component={NoteDetail} name='NoteDetail' />
+          </Stack.Navigator>
+        </NoteProvider>
+      </LanguageProvider>
     </NavigationContainer>
   )
 }

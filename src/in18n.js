@@ -1,29 +1,26 @@
-import i18n from "i18next"
-import Backend from 'i18next-http-backend'
-import LanguageDetector from 'i18next-browser-languagedetector'
+// import i18n from "i18next"
+// import Backend from 'i18next-http-backend'
+// import LanguageDetector from 'i18next-browser-languagedetector'
+import i18next from "i18next"
 import { initReactI18next } from "react-i18next"
+import en from './languages/eng.json'
+import ge from './languages/ger.json'
+import ua from './languages/ua.json'
+import ru from './languages/ru.json'
 
-i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
-    backend: { //ns - nameSpace
-        loadPath: '/assets/languages/{{ns}}/{{lng}}.json',
-    },
+i18next.use(initReactI18next).init({
+    compatibilityJSON: 'v3',
+    lng: 'en',
     fallbackLng: 'en',
-    debug: false,
-    ns: ['search', 'hello', 'input'],
-
-
-    interpolation: {
-        escapeValue: false,
-        formatSeparator: ','
+    resources: {
+        en: en,
+        ge: ge,
+        ua: ua,
+        ru: ru
     },
     react: {
-        wait: true,
-        useSuspense: false
-    },
-    i18n: {
-        defaultLocale: 'en',
-        locales: ['en', 'de', 'fr'],
-    },
+        useSuspense: false,
+    }
 })
 
-export default i18n
+export default i18next
